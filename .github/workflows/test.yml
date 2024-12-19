@@ -1,0 +1,132 @@
+name: Test
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - .gitattributes
+      - .gitignore
+      - LICENSE
+      - README.md
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref_name }}
+  cancel-in-progress: true
+
+permissions: {}
+
+jobs:
+  positive:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    strategy:
+      matrix:
+        mode: 
+          - minor-only
+          - full
+        source:
+          - auto
+          - php.net
+          - offline
+        case: 
+          # Use PHP v7 to ensure deterministic outcomes.
+          - caret-7-3
+          - tilde-7-3
+          - tilde-7-3-5
+          - exactly-7-3-5
+          - complex
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create fake composer.json
+        run: cp testdata/${{ matrix.case }}.composer.json composer.json
+
+      - name: Use local action
+        id: subject
+        uses: ./
+        with:
+          mode: ${{ matrix.mode }}
+          source: ${{ matrix.source }}
+
+      - run: echo '${{ steps.subject.outputs.matrix }}' > actual.json
+
+      - run: diff <(jq --sort-keys . actual.json) <(jq --sort-keys . testdata/${{ matrix.case }}.${{ matrix.mode }}.golden.json)
+
+  negative:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    strategy:
+      matrix:
+        mode: 
+          - minor-only
+          - full
+        source:
+          - auto
+          - php.net
+          - offline
+        case: 
+          - empty-json
+          - invalid-constraint
+          - invalid-json
+          - match-none
+          - missing-php
+          - missing-require
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create fake composer.json
+        run: cp testdata/${{ matrix.case }}.composer.json composer.json
+
+      - name: Use local action
+        id: subject
+        uses: ./
+        with:
+          mode: ${{ matrix.mode }}
+          source: ${{ matrix.source }}
+        continue-on-error: true
+
+      - name: Assert action failed
+        if: steps.subject.outcome != 'failure'
+        run: exit 1
+
+  missing:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    strategy:
+      matrix:
+        mode: 
+          - minor-only
+          - full
+        source:
+          - auto
+          - php.net
+          - offline
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Ensure no composer.json
+        run: rm -f composer.json
+
+      - name: Use local action
+        id: subject
+        uses: ./
+        with:
+          mode: ${{ matrix.mode }}
+          source: ${{ matrix.source }}
+        continue-on-error: true
+
+      - name: Assert action failed
+        if: steps.subject.outcome != 'failure'
+        run: exit 1
+      
