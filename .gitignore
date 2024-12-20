@@ -1,4 +1,1 @@
-composer.phar
-composer.json
-composer.lock
-/vendor/
+/vendor

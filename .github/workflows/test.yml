@@ -8,6 +8,8 @@ on:
   push:
     branches:
       - main
+    tags:
+      - '**'
     paths-ignore:
       - .gitattributes
       - .gitignore
@@ -23,8 +25,6 @@ permissions: {}
 jobs:
   positive:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
     strategy:
       matrix:
         mode: 
@@ -44,25 +44,24 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          path: local-action
 
       - name: Create fake composer.json
-        run: cp testdata/${{ matrix.case }}.composer.json composer.json
+        run: cp local-action/testdata/${{ matrix.case }}.composer.json composer.json
 
-      - name: Use local action
+      - uses: ./local-action
         id: subject
-        uses: ./
         with:
           mode: ${{ matrix.mode }}
           source: ${{ matrix.source }}
 
       - run: echo '${{ steps.subject.outputs.matrix }}' > actual.json
 
-      - run: diff <(jq --sort-keys . actual.json) <(jq --sort-keys . testdata/${{ matrix.case }}.${{ matrix.mode }}.golden.json)
+      - run: diff <(jq --sort-keys . actual.json) <(jq --sort-keys . local-action/testdata/${{ matrix.case }}.${{ matrix.mode }}.golden.json)
 
   negative:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
     strategy:
       matrix:
         mode: 
@@ -82,13 +81,14 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          path: local-action
 
       - name: Create fake composer.json
-        run: cp testdata/${{ matrix.case }}.composer.json composer.json
+        run: cp local-action/testdata/${{ matrix.case }}.composer.json composer.json
 
-      - name: Use local action
+      - uses: ./local-action
         id: subject
-        uses: ./
         with:
           mode: ${{ matrix.mode }}
           source: ${{ matrix.source }}
@@ -100,8 +100,6 @@ jobs:
 
   missing:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
     strategy:
       matrix:
         mode: 
@@ -114,13 +112,14 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          path: local-action
 
       - name: Ensure no composer.json
         run: rm -f composer.json
 
-      - name: Use local action
+      - uses: ./local-action
         id: subject
-        uses: ./
         with:
           mode: ${{ matrix.mode }}
           source: ${{ matrix.source }}
@@ -129,4 +128,3 @@ jobs:
       - name: Assert action failed
         if: steps.subject.outcome != 'failure'
         run: exit 1
-      

@@ -1,0 +1,37 @@
+{
+    "name": "typisttech/php-matrix-action-action",
+    "description": "TODO",
+    "type": "project",
+    "keywords": [
+      "ci",
+      "cli",
+      "github-actions"
+    ],
+    "homepage": "https://github.com/typisttech/php-matrix-action",
+    "license": "MIT",
+    "authors": [
+      {
+        "name": "Typist Tech",
+        "homepage": "https://typist.tech"
+      },
+      {
+        "name": "Tang Rufus",
+        "email": "tangrufus@gmail.com",
+        "homepage": "https://tangrufus.com",
+        "role": "Developer"
+      }
+    ],
+    "support": {
+      "issues": "https://github.com/typisttech/php-matrix-action/issues",
+      "source": "https://github.com/typisttech/php-matrix-action"
+    },
+    "require": {
+        "typisttech/php-matrix": "^0.1.1"
+    },
+    "config": {
+      "sort-packages": true
+    },
+    "bin": [
+      "bin/decode-php-constraint"
+    ]
+  }
