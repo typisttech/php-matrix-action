@@ -15,39 +15,10 @@ inputs:
     description: Source of releases information
     default: auto
 
-  token:
-    description: The token to install php-matrix via composer
-    default: ${{ github.token }}
-
 outputs:
   matrix:
-    description: The php matrix
-    value: ${{ steps.php-matrix.outputs.matrix }}
+    description: The PHP version matrix
 
 runs:
-  using: composite
-  steps:
-    - uses: shivammathur/setup-php@v2
-      with:
-        php-version: '8.4'
-        coverage: none
-        tools: typisttech/php-matrix:0.1.x
-      env:
-        GITHUB_TOKEN: ${{ inputs.token }}
-
-    - name: Decode PHP constraint
-      run: echo "CONSTRAINT=$(php decode-php-constraint.php)" >> "$GITHUB_ENV"
-      shell: bash
-
-    - name: Run php-matrix
-      id: php-matrix
-      run: |
-        {
-          echo 'matrix<<EOF'
-          php-matrix --mode="$MODE" --source="$SOURCE" "$CONSTRAINT"
-          echo EOF
-        } >> "$GITHUB_OUTPUT"
-      env:
-        MODE: ${{ inputs.mode }}
-        SOURCE: ${{ inputs.source }}
-      shell: bash
+  using: docker
+  image: Dockerfile
