@@ -10,11 +10,6 @@ on:
       - main
     tags:
       - '**'
-    paths-ignore:
-      - .gitattributes
-      - .gitignore
-      - LICENSE
-      - README.md
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref_name }}
