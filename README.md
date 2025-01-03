@@ -12,7 +12,7 @@
 [![Hire Typist Tech](https://img.shields.io/badge/Hire-Typist%20Tech-778899)](https://typist.tech/contact/)
 
 <p>
-  <strong>TODO.</strong>
+  <strong>Generate PHP version matrix according to `composer.json`.</strong>
   <br>
   <br>
   Built with ♥ by <a href="https://typist.tech/">Typist Tech</a>
@@ -24,32 +24,194 @@
 
 ## Usage
 
-TODO
+See [action.yml](action.yml) and the underlying script [`typisttech/php-matrix`](https://github.com/typisttech/php-matrix/#options).
 
-### Inputs
+```yaml
+  - uses: typisttech/php-matrix-action@v1
+    with:
+      # Version format.
+      #
+      # Available modes:
+      #   - `minor-only`: Report `MAJOR.MINOR` versions only
+      #   - `full`: Report all satisfying versions in `MAJOR.MINOR.PATCH` format
+      #
+      # Default: minor-only
+      mode: ''
 
-TODO
-
-#### `mode`
-
-Available modes:
-- `minor-only` *(default)*: Report `MAJOR.MINOR` versions only
-- `full`: Report all satisfying versions in `MAJOR.MINOR.PATCH` format
-
-#### `source`
-
-Available sources:
-- `auto` *(default)*: Use `offline` in `minor-only` mode. Otherwise, fetch from [php.net](https://www.php.net/releases/index.php)
-- `php.net`: Fetch releases information from [php.net](https://www.php.net/releases/index.php)
-- `offline`: Use [hardcoded releases](https://github.com/typisttech/php-matrix/blob/main/resources/all-versions.json) information
+      # Source of releases information.
+      #
+      # Available sources:
+      #   - `auto`: Use `offline` in `minor-only` mode. Otherwise, fetch from [php.net]
+      #   - `php.net`: Fetch releases information from [php.net]
+      #   - `offline`: Use [hardcoded releases] information
+      #
+      # [php.net]: https://www.php.net/releases/index.php
+      # [hardcoded releases]: https://github.com/typisttech/php-matrix/blob/main/resources/all-versions.json
+      #
+      # Default: auto
+      source: ''
+```
 
 ### Outputs
 
-TODO
+This action yields a single output `matrix` which is a JSON-encoded string of:
+
+| Key | Description | Example |
+| --- | --- | --- |
+| `constraint`  | PHP constraint found in `composer.json` | `^7.3 \|\| ^8.0` |
+| `versions` | Array of all supported PHP versions | In `minor-only` mode, `["7.3", "7.4", "8.0", "8.1", "8.2", "8.3", "8.4"]`<br><br>In `full` mode, `["7.4.998", "7.4.999", "8.4.998", "8.4.999"]` |
+| `lowest` | Lowest supported PHP versions | In `minor-only` mode, `7.3`<br><br>In `full` mode, `7.3.0` |
+| `highest` | Highest supported PHP versions | In `minor-only` mode, `8.4`<br><br>In `full` mode, `8.4.2` |
+
+> [!TIP]
+>
+> Use [`fromJSON()`](https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/evaluate-expressions-in-workflows-and-actions#fromjson) and [`toJSON()`](https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/evaluate-expressions-in-workflows-and-actions#tojson) to decode the output.
+>
+> ```yaml
+> jobs:
+>   php-matrix:
+>     runs-on: ubuntu-latest
+>     outputs:
+>       matrix: ${{ steps.php-matrix.outputs.matrix }}
+>       constraint: ${{ fromJSON(steps.php-matrix.outputs.matrix).constraint }}
+>       # Use `fromJSON()` when accessing `versions`!
+>       versions: ${{ toJSON(fromJSON(steps.php-matrix.outputs.matrix).versions) }}
+>       lowest: ${{ fromJSON(steps.php-matrix.outputs.matrix).lowest }}
+>       highest: ${{ fromJSON(steps.php-matrix.outputs.matrix).highest }}
+>     steps:
+>       - uses: actions/checkout@v4
+>       - uses: typisttech/php-matrix-action@main
+>         id: php-matrix
+> ```
 
 ## Examples
 
-TODO
+<details>
+  <summary>Run tests against all supported PHP minor versions.</summary>
+
+```yaml
+name: Test
+
+on:
+  push:
+
+jobs:
+  php-matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.php-matrix.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: typisttech/php-matrix-action@v1
+        id: php-matrix
+
+  test:
+    runs-on: ubuntu-latest
+    needs: php-matrix
+    strategy:
+      matrix:
+        php: ${{ fromJSON(needs.php-matrix.outputs.matrix).versions }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+      - run: composer install
+      - run: composer test
+```
+
+</details>
+
+<details>
+  <summary>Run `$ pint --test` with the lowest supported PHP minor version.</summary>
+
+```yaml
+name: Pint
+
+on:
+  push:
+
+jobs:
+  pint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: typisttech/php-matrix-action@v1
+        id: php-matrix
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version:  ${{ fromJSON(steps.php-matrix.outputs.matrix).lowest }}
+          tools: pint
+
+      - run: pint --test
+```
+
+</details>
+
+<details>
+  <summary>Run tests with coverage.</summary>
+
+```yaml
+name: Test
+
+on:
+  push:
+
+jobs:
+  php-matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      versions: ${{ toJSON(fromJSON(steps.php-matrix.outputs.matrix).versions) }}
+      highest: ${{ fromJSON(steps.php-matrix.outputs.matrix).highest }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: composer.json
+          sparse-checkout-cone-mode: false
+
+      - uses: typisttech/php-matrix-action@v1
+        id: php-matrix
+
+  test:
+    runs-on: ubuntu-latest
+    needs: php-matrix
+    strategy:
+      matrix:
+        php: ${{ fromJSON(needs.php-matrix.outputs.versions }}
+        dependency-versions: [lowest, highest]
+        coverage: [none]
+        exclude:
+          - php: ${{ needs.php-matrix.outputs.highest }}
+            dependency-versions: highest
+            coverage: none
+        include:
+          - php: ${{ needs.php-matrix.outputs.highest }}
+            dependency-versions: highest
+            coverage: xdebug
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: ${{ matrix.coverage }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: ramsey/composer-install@v3
+        with:
+          dependency-versions: ${{ matrix.dependency-versions }}
+
+      - run: composer test:with-coverage
+        if: ${{ matrix.coverage == 'xdebug' }}
+
+      - run: composer test:without-coverage
+        if: ${{ matrix.coverage != 'xdebug' }}
+```
+
+</details>
 
 ## Credits
 
