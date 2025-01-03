@@ -1,6 +1,6 @@
 {
     "name": "typisttech/php-matrix-action-action",
-    "description": "TODO",
+    "description": "Generate PHP version matrix according to `composer.json`",
     "type": "project",
     "keywords": [
       "ci",
