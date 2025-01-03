@@ -86,7 +86,7 @@ This action yields a single output `matrix` which is a JSON-encoded string of:
 
 ## Examples
 
-<details>
+<details open>
   <summary>Run tests against all supported PHP minor versions.</summary>
 
 ```yaml
