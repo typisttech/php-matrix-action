@@ -1,5 +1,5 @@
 name: PHP Matrix
-description: TODO
+description: Generate PHP version matrix according to `composer.json`
 
 author: Typist Tech Limited
 branding:

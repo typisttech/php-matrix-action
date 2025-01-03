@@ -12,7 +12,7 @@
 [![Hire Typist Tech](https://img.shields.io/badge/Hire-Typist%20Tech-778899)](https://typist.tech/contact/)
 
 <p>
-  <strong>Generate PHP version matrix according to `composer.json`.</strong>
+  <strong>Generate PHP version matrix according to <code>composer.json</code></strong>
   <br>
   <br>
   Built with ♥ by <a href="https://typist.tech/">Typist Tech</a>
