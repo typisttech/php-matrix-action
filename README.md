@@ -3,7 +3,7 @@
 # PHP Matrix Action
 
 [![GitHub Release](https://img.shields.io/github/v/release/typisttech/php-matrix-action)](https://github.com/typisttech/php-matrix-action/releases/latest)
-[![GitHub Marketplace](https://img.shields.io/badge/marketplace-php--matrix-blue?logo=github&style=flat-square)](https://github.com/marketplace/actions/php-matrix)
+[![GitHub Marketplace](https://img.shields.io/badge/marketplace-php--matrix-blue?logo=github)](https://github.com/marketplace/actions/php-matrix)
 [![Test](https://github.com/typisttech/php-matrix-action/actions/workflows/test.yml/badge.svg)](https://github.com/typisttech/php-matrix-action/actions/workflows/test.yml)
 [![License](https://img.shields.io/github/license/typisttech/php-matrix-action.svg)](https://github.com/typisttech/php-matrix-action/blob/master/LICENSE)
 [![Follow @TangRufus on X](https://img.shields.io/badge/Follow-TangRufus-15202B?logo=x&logoColor=white)](https://x.com/tangrufus)
