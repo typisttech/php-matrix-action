@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "3d326eb2247e7dd8525ca4a3efa542b2",
+    "content-hash": "d3a2a4f642fb03c108ce5201a7624b88",
     "packages": [
         {
             "name": "composer/semver",
@@ -1319,16 +1319,16 @@
         },
         {
             "name": "typisttech/php-matrix",
-            "version": "v0.2.1",
+            "version": "v0.2.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/typisttech/php-matrix.git",
-                "reference": "05a7f203925d0a5a7e7edff11863bbf69f496e05"
+                "reference": "76f3f01ff538c46b878da73887cae9552e1a7ad8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/typisttech/php-matrix/zipball/05a7f203925d0a5a7e7edff11863bbf69f496e05",
-                "reference": "05a7f203925d0a5a7e7edff11863bbf69f496e05",
+                "url": "https://api.github.com/repos/typisttech/php-matrix/zipball/76f3f01ff538c46b878da73887cae9552e1a7ad8",
+                "reference": "76f3f01ff538c46b878da73887cae9552e1a7ad8",
                 "shasum": ""
             },
             "require": {
@@ -1389,7 +1389,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-01-18T01:02:50+00:00"
+            "time": "2025-02-17T03:36:12+00:00"
         }
     ],
     "packages-dev": [],
