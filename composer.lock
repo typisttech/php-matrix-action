@@ -1319,16 +1319,16 @@
         },
         {
             "name": "typisttech/php-matrix",
-            "version": "v0.2.2",
+            "version": "v0.2.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/typisttech/php-matrix.git",
-                "reference": "76f3f01ff538c46b878da73887cae9552e1a7ad8"
+                "reference": "585cc4be454ac137b33d36f2577da5675e2f9628"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/typisttech/php-matrix/zipball/76f3f01ff538c46b878da73887cae9552e1a7ad8",
-                "reference": "76f3f01ff538c46b878da73887cae9552e1a7ad8",
+                "url": "https://api.github.com/repos/typisttech/php-matrix/zipball/585cc4be454ac137b33d36f2577da5675e2f9628",
+                "reference": "585cc4be454ac137b33d36f2577da5675e2f9628",
                 "shasum": ""
             },
             "require": {
@@ -1389,7 +1389,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-02-17T03:36:12+00:00"
+            "time": "2025-03-14T10:22:49+00:00"
         }
     ],
     "packages-dev": [],
