@@ -26,10 +26,14 @@
       "source": "https://github.com/typisttech/php-matrix-action"
     },
     "require": {
+        "php": "8.4.x",
         "typisttech/php-matrix": "^0.2.6"
     },
     "config": {
-      "sort-packages": true
+      "sort-packages": true,
+      "platform": {
+    "php": "8.4.0"
+    }
     },
     "bin": [
       "bin/decode-php-constraint"
