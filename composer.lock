@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8730bf9e4aff9ab0e026536ff183603d",
+    "content-hash": "d6d9481966a4ea1956830f95cdc27996",
     "packages": [
         {
             "name": "composer/semver",
@@ -671,16 +671,16 @@
         },
         {
             "name": "symfony/console",
-            "version": "v7.3.0",
+            "version": "v7.3.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-                "reference": "66c1440edf6f339fd82ed6c7caa76cb006211b44"
+                "reference": "9e27aecde8f506ba0fd1d9989620c04a87697101"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/66c1440edf6f339fd82ed6c7caa76cb006211b44",
-                "reference": "66c1440edf6f339fd82ed6c7caa76cb006211b44",
+                "url": "https://api.github.com/repos/symfony/console/zipball/9e27aecde8f506ba0fd1d9989620c04a87697101",
+                "reference": "9e27aecde8f506ba0fd1d9989620c04a87697101",
                 "shasum": ""
             },
             "require": {
@@ -745,7 +745,7 @@
                 "terminal"
             ],
             "support": {
-                "source": "https://github.com/symfony/console/tree/v7.3.0"
+                "source": "https://github.com/symfony/console/tree/v7.3.1"
             },
             "funding": [
                 {
@@ -761,7 +761,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-05-24T10:34:04+00:00"
+            "time": "2025-06-27T19:55:54+00:00"
         },
         {
             "name": "symfony/deprecation-contracts",
@@ -1321,16 +1321,16 @@
         },
         {
             "name": "typisttech/php-matrix",
-            "version": "v0.2.6",
+            "version": "v0.2.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/typisttech/php-matrix",
-                "reference": "c3c41a7841b81e19831dddd632528c25371d7ab0"
+                "reference": "54f7e3d05edf67cd136af4094f5d2fd730f2819d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/typisttech/php-matrix/zipball/c3c41a7841b81e19831dddd632528c25371d7ab0",
-                "reference": "c3c41a7841b81e19831dddd632528c25371d7ab0",
+                "url": "https://api.github.com/repos/typisttech/php-matrix/zipball/54f7e3d05edf67cd136af4094f5d2fd730f2819d",
+                "reference": "54f7e3d05edf67cd136af4094f5d2fd730f2819d",
                 "shasum": ""
             },
             "require": {
@@ -1381,7 +1381,7 @@
                 "issues": "https://github.com/typisttech/php-matrix/issues",
                 "source": "https://github.com/typisttech/php-matrix"
             },
-            "time": "2025-06-06T02:12:56+00:00"
+            "time": "2025-07-03T22:28:08+00:00"
         }
     ],
     "packages-dev": [],
@@ -1390,7 +1390,12 @@
     "stability-flags": {},
     "prefer-stable": false,
     "prefer-lowest": false,
-    "platform": {},
+    "platform": {
+        "php": "8.4.x"
+    },
     "platform-dev": {},
+    "platform-overrides": {
+        "php": "8.4.0"
+    },
     "plugin-api-version": "2.6.0"
 }
