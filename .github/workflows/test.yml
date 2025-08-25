@@ -38,7 +38,7 @@ jobs:
           - complex
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           path: local-action
 
@@ -75,7 +75,7 @@ jobs:
           - missing-require
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           path: local-action
 
@@ -106,7 +106,7 @@ jobs:
           - offline
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           path: local-action
 
