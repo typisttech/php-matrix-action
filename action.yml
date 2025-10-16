@@ -7,6 +7,10 @@ branding:
   color: black
 
 inputs:
+  composer-json:
+    description: Path to composer.json
+    default: composer.json
+
   mode:
     description: Version format
     default: minor-only
@@ -15,10 +19,114 @@ inputs:
     description: Source of releases information
     default: auto
 
+  version:
+    description: |
+      The version of php-matrix to use. Leave blank for latest. For example: v1.0.2
+    default: ''
+
+  verify-attestation:
+    description: Whether to verify PHP matrix tarball attestation
+    default: true
+
+  github-token:
+    description: GitHub token to use for authentication
+    default: ${{ github.token }}
+
 outputs:
   matrix:
     description: The PHP version matrix
+    value: ${{ steps.generate-matrix.outputs.matrix }}
 
 runs:
-  using: docker
-  image: Dockerfile
+  using: "composite"
+  steps:
+    - name: Download PHP Matrix (Linux arm64)
+      if: ${{ runner.os == 'Linux' && runner.arch == 'ARM64' }}
+      run: gh release download --repo typisttech/php-matrix --output php-matrix.tar.gz --pattern "${PATTERN}" "${TAG}"
+      shell: bash
+      working-directory: ${{ github.action_path }}
+      env:
+        PATTERN: php-matrix_linux_arm64.tar.gz
+        TAG: ${{ inputs.version }}
+        GH_TOKEN: ${{ inputs.github-token }}
+
+    - name: Download PHP Matrix (Linux amd64)
+      if: ${{ runner.os == 'Linux' && runner.arch == 'x64' }}
+      run: gh release download --repo typisttech/php-matrix --output php-matrix.tar.gz --pattern "${PATTERN}" "${TAG}"
+      shell: bash
+      working-directory: ${{ github.action_path }}
+      env:
+        PATTERN: php-matrix_linux_amd64.tar.gz
+        TAG: ${{ inputs.version }}
+        GH_TOKEN: ${{ github.token }}
+
+    - name: Download PHP Matrix (Darwin arm64)
+      if: ${{ runner.os == 'macOS' && runner.arch == 'ARM64' }}
+      run: gh release download --repo typisttech/php-matrix --output php-matrix.tar.gz --pattern "${PATTERN}" "${TAG}"
+      shell: bash
+      working-directory: ${{ github.action_path }}
+      env:
+        PATTERN: php-matrix_darwin_arm64.tar.gz
+        TAG: ${{ inputs.version }}
+        GH_TOKEN: ${{ inputs.github-token }}
+
+    - name: Download PHP Matrix (Darwin amd64)
+      if: ${{ runner.os == 'macOS' && runner.arch == 'x64' }}
+      run: gh release download --repo typisttech/php-matrix --output php-matrix.tar.gz --pattern "${PATTERN}" "${TAG}"
+      shell: bash
+      working-directory: ${{ github.action_path }}
+      env:
+        PATTERN: php-matrix_darwin_amd64.tar.gz
+        TAG: ${{ inputs.version }}
+        GH_TOKEN: ${{ inputs.github-token }}
+
+    - name: Verify Attestation
+      if: ${{ inputs.verify-attestation == 'true' }}
+      run: gh attestation verify --repo typisttech/php-matrix php-matrix.tar.gz
+      shell: bash
+      working-directory: ${{ github.action_path }}
+      env:
+        GH_TOKEN: ${{ inputs.github-token }}
+
+    - name: Unarchive the binary
+      run: |
+        mkdir bin
+        tar -xvf php-matrix.tar.gz -C ./bin php-matrix
+      shell: bash
+      working-directory: ${{ github.action_path }}
+
+    - name: Add the binary into PATH
+      run: echo "${ACTION_PATH}/bin" >> "$GITHUB_PATH"
+      shell: bash
+      env:
+        ACTION_PATH: ${{ github.action_path }}
+
+    - name: Print PHP Matrix Version
+      run: php-matrix --version
+      shell: bash
+
+    - name: Generate Matrix
+      id: generate-matrix
+      run: |
+        php-matrix composer --mode="${INPUT_MODE}" --source="${INPUT_SOURCE}" "${INPUT_COMPOSER_JSON}" > matrix 2>&1
+        retVal=$?
+
+        echo "::group::===> Matrix Output"
+        cat matrix
+        echo "::endgroup::"
+
+        if [ $retVal -ne 0 ]; then
+            echo "::error::Unable to generate matrix"
+            exit 1
+        fi
+
+        {
+            echo 'matrix<<EOF'
+            cat matrix
+            echo EOF
+        } >> "$GITHUB_OUTPUT"
+      shell: sh
+      env:
+        INPUT_COMPOSER_JSON: ${{ inputs.composer-json }}
+        INPUT_MODE: ${{ inputs.mode }}
+        INPUT_SOURCE: ${{ inputs.source }}

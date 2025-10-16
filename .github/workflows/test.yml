@@ -19,35 +19,71 @@ permissions: {}
 
 jobs:
   positive:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.runs-on }}
     strategy:
       matrix:
-        mode: 
+        runs-on:
+          - ubuntu-latest
+        composer-json:
+          - composer.json
+          - not-named-composer.json
+          - sub/dir/composer.json
+          - ../not/under/workdpace/composer.json
+        mode:
           - minor-only
           - full
         source:
           - auto
           - php.net
           - offline
-        case: 
-          # Use PHP v7 to ensure deterministic outcomes.
+        case:
           - caret-7-3
           - exactly-7-3-5
           - complex
-
+        verify-attestation: 
+          - false
+        include:
+          - runs-on: ubuntu-24.04-arm
+            composer-json: sub/dir/composer.json
+            mode: full
+            source: offline
+            case: complex
+            verify-attestation: true
+          - runs-on: ubuntu-latest
+            composer-json: sub/dir/composer.json
+            mode: full
+            source: offline
+            case: complex
+            verify-attestation: true
+          - runs-on: macos-latest
+            composer-json: sub/dir/composer.json
+            mode: full
+            source: offline
+            case: complex
+            verify-attestation: true
+          - runs-on: macos-15-intel
+            composer-json: sub/dir/composer.json
+            mode: full
+            source: offline
+            case: complex
+            verify-attestation: true
     steps:
       - uses: actions/checkout@v5
         with:
           path: local-action
 
       - name: Create fake composer.json
-        run: cp local-action/testdata/${{ matrix.case }}.composer.json composer.json
+        run: |
+          mkdir -p $(dirname ${{ matrix.composer-json }})
+          cp local-action/testdata/${{ matrix.case }}.composer.json ${{ matrix.composer-json }}
 
       - uses: ./local-action
         id: subject
         with:
+          composer-json: ${{ matrix.composer-json }}
           mode: ${{ matrix.mode }}
           source: ${{ matrix.source }}
+          verify-attestation: ${{ matrix.verify-attestation }}
 
       - run: echo '${{ steps.subject.outputs.matrix }}' > actual.json
 
@@ -57,21 +93,20 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        mode: 
+        mode:
           - minor-only
           - full
         source:
           - auto
           - php.net
           - offline
-        case: 
+        case:
           - empty-json
           - invalid-constraint
           - invalid-json
           - match-none
           - missing-php
           - missing-require
-
     steps:
       - uses: actions/checkout@v5
         with:
@@ -102,7 +137,6 @@ jobs:
           - auto
           - php.net
           - offline
-
     steps:
       - uses: actions/checkout@v5
         with:
