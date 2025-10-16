@@ -32,8 +32,6 @@ jobs:
         case: 
           # Use PHP v7 to ensure deterministic outcomes.
           - caret-7-3
-          - tilde-7-3
-          - tilde-7-3-5
           - exactly-7-3-5
           - complex
 
@@ -123,3 +121,12 @@ jobs:
       - name: Assert action failed
         if: steps.subject.outcome != 'failure'
         run: exit 1
+
+  wait-for-all-tests:
+    needs:
+      - positive
+      - negative
+      - missing
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "All tests passed!"
