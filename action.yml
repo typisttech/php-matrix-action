@@ -91,11 +91,10 @@ runs:
 
     - name: Verify Attestation
       if: ${{ inputs.verify-attestation == 'true' }}
-      run: gh release verify-asset --repo typisttech/php-matrix ${TAG} php-matrix.tar.gz
+      run: gh attestation verify --repo typisttech/php-matrix php-matrix.tar.gz
       shell: bash
       working-directory: ${{ github.action_path }}
       env:
-        TAG: ${{ inputs.version || '' }}
         GH_TOKEN: ${{ inputs.github-token }}
 
     - name: Unarchive the binary
