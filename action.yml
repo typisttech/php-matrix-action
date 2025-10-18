@@ -33,9 +33,18 @@ inputs:
     default: ${{ github.token }}
 
 outputs:
-  matrix:
-    description: The PHP version matrix
-    value: ${{ steps.generate-matrix.outputs.matrix }}
+  constraint:
+    description: The `require.php` constraint found in `composer.json`
+    value: ${{ fromJSON(steps.generate-matrix.outputs.matrix).constraint }}
+  highest:
+    description: Highest supported PHP versions
+    value: ${{ fromJSON(steps.generate-matrix.outputs.matrix).highest }}
+  lowest:
+    description: Lowest supported PHP versions
+    value: ${{ fromJSON(steps.generate-matrix.outputs.matrix).lowest }}
+  versions:
+    description: Array of all supported PHP versions
+    value: ${{ toJSON(fromJSON(steps.generate-matrix.outputs.matrix).versions) }}
 
 runs:
   using: "composite"

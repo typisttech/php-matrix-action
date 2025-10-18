@@ -85,9 +85,48 @@ jobs:
           source: ${{ matrix.source }}
           verify-attestation: ${{ matrix.verify-attestation }}
 
-      - run: echo '${{ steps.subject.outputs.matrix }}' > actual.json
+      - run: |
+          {
+            echo "{"
+            echo '"constraint": "${{ steps.subject.outputs.constraint }}",'
+            echo '"highest": "${{ steps.subject.outputs.highest }}",'
+            echo '"lowest": "${{ steps.subject.outputs.lowest }}",'
+            echo '"versions": ${{ steps.subject.outputs.versions }}'
+            echo "}"
+          } >> actual.json
 
       - run: diff <(jq --sort-keys . actual.json) <(jq --sort-keys . local-action/testdata/${{ matrix.case }}.${{ matrix.mode }}.golden.json)
+
+  outputs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          path: local-action
+
+      - uses: ./local-action
+        id: subject
+        with:
+          composer-json: local-action/testdata/complex.composer.json
+          mode: minor-only
+          source: offline
+          verify-attestation: false
+
+      - name: Assert constraint output
+        run: exit 1
+        if: steps.subject.outputs.constraint != '^7.3.32 || ^8.1 <=8.1.9'
+
+      - name: Assert versions output
+        run: exit 1
+        if: steps.subject.outputs.versions != toJSON(fromJSON('["7.3","7.4","8.1"]'))
+
+      - name: Assert lowest output
+        run: exit 1
+        if: steps.subject.outputs.lowest != '7.3'
+
+      - name: Assert highest output
+        run: exit 1
+        if: steps.subject.outputs.highest != '8.1'
 
   negative:
     runs-on: ubuntu-latest
@@ -159,6 +198,7 @@ jobs:
   wait-for-all-tests:
     needs:
       - positive
+      - outputs
       - negative
       - missing
     runs-on: ubuntu-latest
