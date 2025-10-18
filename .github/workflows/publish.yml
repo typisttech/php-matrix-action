@@ -9,11 +9,9 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
-      id-token: write
-      packages: write
+      contents: write
     steps:
       - uses: actions/checkout@v5
-      - uses: actions/publish-immutable-action@v0.0.4
+      - uses: actions/publish-action@v0.0.4
         with:
-          github-token: ${{ github.token }}
+          source-tag: ${{ github.ref_name }}
