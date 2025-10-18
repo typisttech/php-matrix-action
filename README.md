@@ -27,7 +27,7 @@
 See [action.yml](action.yml) and the underlying script [`typisttech/php-matrix`](https://github.com/typisttech/php-matrix/#options).
 
 ```yaml
-  - uses: typisttech/php-matrix-action@v1
+  - uses: typisttech/php-matrix-action@v2
     with:
       # Path to composer.json
       #
@@ -104,7 +104,7 @@ jobs:
       versions: ${{ steps.php-matrix.outputs.versions }}
     steps:
       - uses: actions/checkout@v4
-      - uses: typisttech/php-matrix-action@v1
+      - uses: typisttech/php-matrix-action@v2
         id: php-matrix
 
   test:
@@ -139,7 +139,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: typisttech/php-matrix-action@v1
+      - uses: typisttech/php-matrix-action@v2
         id: php-matrix
 
       - uses: shivammathur/setup-php@v2
@@ -174,7 +174,7 @@ jobs:
           sparse-checkout: composer.json
           sparse-checkout-cone-mode: false
 
-      - uses: typisttech/php-matrix-action@v1
+      - uses: typisttech/php-matrix-action@v2
         id: php-matrix
 
   test:
