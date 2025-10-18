@@ -29,6 +29,11 @@ See [action.yml](action.yml) and the underlying script [`typisttech/php-matrix`]
 ```yaml
   - uses: typisttech/php-matrix-action@v1
     with:
+      # Path to composer.json
+      #
+      # Default: composer.json
+      composer-json: some/path/to/composer.json
+      
       # Version format.
       #
       # Available modes:
@@ -36,7 +41,7 @@ See [action.yml](action.yml) and the underlying script [`typisttech/php-matrix`]
       #   - `full`: Report all satisfying versions in `MAJOR.MINOR.PATCH` format
       #
       # Default: minor-only
-      mode: ''
+      mode: full
 
       # Source of releases information.
       #
@@ -49,12 +54,32 @@ See [action.yml](action.yml) and the underlying script [`typisttech/php-matrix`]
       # [hardcoded releases]: https://github.com/typisttech/php-matrix/blob/main/resources/all-versions.json
       #
       # Default: auto
-      source: ''
+      source: offline
+
+      # PHP Matrix version.
+      # 
+      # The version of [php-matrix] to use. Leave blank for latest. For example: v1.0.2
+      # 
+      # [php-matrix]: https://github.com/typisttech/php-matrix
+      #
+      # Default: ''
+      version: v1.0.2
+
+      # Verify Attestation
+      #
+      # Whether to verify PHP matrix tarball attestation.
+
+      # Github Token
+      #
+      # GitHub token to use for authentication
+      #
+      # Default: ${{ github.token }}
+      github-token: ${{ secrets.GITHUB_PAT_TOKEN }}
 ```
 
 ### Outputs
 
-This action yields a single output `matrix` which is a JSON-encoded string of:
+This action yields **a single output** `matrix` which is a JSON-encoded string of:
 
 | Key | Description | Example |
 | --- | --- | --- |
@@ -123,16 +148,16 @@ jobs:
 </details>
 
 <details>
-  <summary>Run `$ pint --test` with the lowest supported PHP minor version.</summary>
+  <summary>Run `phpstan` with the lowest supported PHP minor version.</summary>
 
 ```yaml
-name: Pint
+name: PHPStan
 
 on:
   push:
 
 jobs:
-  pint:
+  phpstan:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -143,9 +168,10 @@ jobs:
       - uses: shivammathur/setup-php@v2
         with:
           php-version:  ${{ fromJSON(steps.php-matrix.outputs.matrix).lowest }}
-          tools: pint
 
-      - run: pint --test
+      - run: composer install
+
+      - run: vendor/bin/phpstan analyse src
 ```
 
 </details>
