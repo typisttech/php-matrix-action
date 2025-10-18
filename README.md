@@ -22,6 +22,17 @@
 
 ---
 
+> [!TIP]
+> **Hire Tang Rufus!**
+>
+> I am looking for my next role, freelance or full-time.
+> If you find this tool useful, I can build you more dev tools like this.
+> Let's talk if you are hiring PHP / Ruby / Go developers.
+>
+> Contact me at https://typist.tech/contact/
+
+---
+
 ## Usage
 
 See [action.yml](action.yml) and the underlying script [`typisttech/php-matrix`](https://github.com/typisttech/php-matrix/#options).
@@ -85,6 +96,16 @@ See [action.yml](action.yml) and the underlying script [`typisttech/php-matrix`]
 | `versions` | String of an array of all supported PHP versions | In `minor-only` mode, `["7.3", "7.4", "8.0", "8.1", "8.2", "8.3", "8.4"]`<br><br>In `full` mode, `["7.4.998", "7.4.999", "8.4.998", "8.4.999"]` |
 | `lowest` | Lowest supported PHP versions | In `minor-only` mode, `7.3`<br><br>In `full` mode, `7.3.0` |
 | `highest` | Highest supported PHP versions | In `minor-only` mode, `8.4`<br><br>In `full` mode, `8.4.2` |
+
+> [!TIP]
+> **Hire Tang Rufus!**
+>
+> There is no need to understand any of these quirks.
+> Let me handle them for you.
+> I am seeking my next job, freelance or full-time.
+>
+> If you are hiring PHP / Ruby / Go developers,
+> contact me at https://typist.tech/contact/
 
 ## Examples
 

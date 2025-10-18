@@ -97,7 +97,7 @@ runs:
       env:
         GH_TOKEN: ${{ inputs.github-token }}
 
-    - name: Unarchive the binary
+    - name: Unarchive the Binary
       run: |
         mkdir bin
         tar -xvf php-matrix.tar.gz -C ./bin php-matrix
@@ -109,10 +109,6 @@ runs:
       shell: bash
       env:
         ACTION_PATH: ${{ github.action_path }}
-
-    - name: Print PHP Matrix Version
-      run: php-matrix --version
-      shell: bash
 
     - name: Generate Matrix
       id: generate-matrix
@@ -139,3 +135,24 @@ runs:
         INPUT_COMPOSER_JSON: ${{ inputs.composer-json }}
         INPUT_MODE: ${{ inputs.mode }}
         INPUT_SOURCE: ${{ inputs.source }}
+
+    - name: Print Info
+      if: ${{ !cancelled() }}
+      run: |
+        echo "==> Setup PHP Matrix"
+        echo -e "\033[32;m✓\033[0m \033[34;mphp-matrix\033[0m https://github.com/typisttech/php-matrix"
+        echo "::group::$ php-matrix --version"
+        php-matrix --version
+        echo "::endgroup::"
+
+        echo ""
+        echo "==> Sponsor php-matrix-action"
+        echo -e "\033[32;m✓\033[0m \033[34;mphp-matrix-action\033[0m https://github.com/sponsors/tangrufus"
+
+        echo ""
+        echo "==> Hire Tang Rufus"
+        echo "I am looking for my next role, freelance or full-time."
+        echo "If you find this tool useful, I can build you more dev tools like this."
+        echo "Let's talk if you are hiring PHP / Ruby / Go developers."
+        echo -e "\033[32;m✓\033[0m \033[34;mTang Rufus\033[0m https://typist.tech/contact"
+      shell: bash
