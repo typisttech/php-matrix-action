@@ -79,35 +79,12 @@ See [action.yml](action.yml) and the underlying script [`typisttech/php-matrix`]
 
 ### Outputs
 
-This action yields **a single output** `matrix` which is a JSON-encoded string of:
-
 | Key | Description | Example |
 | --- | --- | --- |
 | `constraint`  | PHP constraint found in `composer.json` | `^7.3 \|\| ^8.0` |
-| `versions` | Array of all supported PHP versions | In `minor-only` mode, `["7.3", "7.4", "8.0", "8.1", "8.2", "8.3", "8.4"]`<br><br>In `full` mode, `["7.4.998", "7.4.999", "8.4.998", "8.4.999"]` |
+| `versions` | String of an array of all supported PHP versions | In `minor-only` mode, `["7.3", "7.4", "8.0", "8.1", "8.2", "8.3", "8.4"]`<br><br>In `full` mode, `["7.4.998", "7.4.999", "8.4.998", "8.4.999"]` |
 | `lowest` | Lowest supported PHP versions | In `minor-only` mode, `7.3`<br><br>In `full` mode, `7.3.0` |
 | `highest` | Highest supported PHP versions | In `minor-only` mode, `8.4`<br><br>In `full` mode, `8.4.2` |
-
-> [!TIP]
->
-> Use [`fromJSON()`](https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/evaluate-expressions-in-workflows-and-actions#fromjson) and [`toJSON()`](https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/evaluate-expressions-in-workflows-and-actions#tojson) to decode the output.
->
-> ```yaml
-> jobs:
->   php-matrix:
->     runs-on: ubuntu-latest
->     outputs:
->       matrix: ${{ steps.php-matrix.outputs.matrix }}
->       constraint: ${{ fromJSON(steps.php-matrix.outputs.matrix).constraint }}
->       # Use `fromJSON()` when accessing `versions`!
->       versions: ${{ toJSON(fromJSON(steps.php-matrix.outputs.matrix).versions) }}
->       lowest: ${{ fromJSON(steps.php-matrix.outputs.matrix).lowest }}
->       highest: ${{ fromJSON(steps.php-matrix.outputs.matrix).highest }}
->     steps:
->       - uses: actions/checkout@v4
->       - uses: typisttech/php-matrix-action@main
->         id: php-matrix
-> ```
 
 ## Examples
 
@@ -124,7 +101,7 @@ jobs:
   php-matrix:
     runs-on: ubuntu-latest
     outputs:
-      matrix: ${{ steps.php-matrix.outputs.matrix }}
+      versions: ${{ steps.php-matrix.outputs.versions }}
     steps:
       - uses: actions/checkout@v4
       - uses: typisttech/php-matrix-action@v1
@@ -135,7 +112,7 @@ jobs:
     needs: php-matrix
     strategy:
       matrix:
-        php: ${{ fromJSON(needs.php-matrix.outputs.matrix).versions }}
+        php: ${{ fromJSON(needs.php-matrix.outputs.versions) }}
     steps:
       - uses: actions/checkout@v4
       - uses: shivammathur/setup-php@v2
@@ -167,7 +144,7 @@ jobs:
 
       - uses: shivammathur/setup-php@v2
         with:
-          php-version:  ${{ fromJSON(steps.php-matrix.outputs.matrix).lowest }}
+          php-version:  ${{ steps.php-matrix.outputs.lowest }}
 
       - run: composer install
 
@@ -189,8 +166,8 @@ jobs:
   php-matrix:
     runs-on: ubuntu-latest
     outputs:
-      versions: ${{ toJSON(fromJSON(steps.php-matrix.outputs.matrix).versions) }}
-      highest: ${{ fromJSON(steps.php-matrix.outputs.matrix).highest }}
+      versions: ${{ steps.php-matrix.outputs.versions }}
+      highest: ${{ steps.php-matrix.outputs.highest }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -205,7 +182,7 @@ jobs:
     needs: php-matrix
     strategy:
       matrix:
-        php: ${{ fromJSON(needs.php-matrix.outputs.versions }}
+        php: ${{ fromJSON(needs.php-matrix.outputs.versions) }}
         dependency-versions: [lowest, highest]
         coverage: [none]
         exclude:
