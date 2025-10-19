@@ -110,7 +110,7 @@ See [action.yml](action.yml) and the underlying script [`typisttech/php-matrix`]
 ## Examples
 
 <details open>
-  <summary>Run tests against all supported PHP minor versions.</summary>
+  <summary>Run tests against all supported PHP versions.</summary>
 
 ```yaml
 name: Test
@@ -124,73 +124,7 @@ jobs:
     outputs:
       versions: ${{ steps.php-matrix.outputs.versions }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: typisttech/php-matrix-action@v2
-        id: php-matrix
-
-  test:
-    runs-on: ubuntu-latest
-    needs: php-matrix
-    strategy:
-      matrix:
-        php: ${{ fromJSON(needs.php-matrix.outputs.versions) }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: shivammathur/setup-php@v2
-        with:
-          php-version: ${{ matrix.php }}
-      - run: composer install
-      - run: composer test
-```
-
-</details>
-
-<details>
-  <summary>Run `phpstan` with the lowest supported PHP minor version.</summary>
-
-```yaml
-name: PHPStan
-
-on:
-  push:
-
-jobs:
-  phpstan:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: typisttech/php-matrix-action@v2
-        id: php-matrix
-
-      - uses: shivammathur/setup-php@v2
-        with:
-          php-version:  ${{ steps.php-matrix.outputs.lowest }}
-
-      - run: composer install
-
-      - run: vendor/bin/phpstan analyse src
-```
-
-</details>
-
-<details>
-  <summary>Run tests with coverage.</summary>
-
-```yaml
-name: Test
-
-on:
-  push:
-
-jobs:
-  php-matrix:
-    runs-on: ubuntu-latest
-    outputs:
-      versions: ${{ steps.php-matrix.outputs.versions }}
-      highest: ${{ steps.php-matrix.outputs.highest }}
-    steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           sparse-checkout: composer.json
           sparse-checkout-cone-mode: false
@@ -203,38 +137,101 @@ jobs:
     needs: php-matrix
     strategy:
       matrix:
-        php: ${{ fromJSON(needs.php-matrix.outputs.versions) }}
-        dependency-versions: [lowest, highest]
-        coverage: [none]
-        exclude:
-          - php: ${{ needs.php-matrix.outputs.highest }}
-            dependency-versions: highest
-            coverage: none
-        include:
-          - php: ${{ needs.php-matrix.outputs.highest }}
-            dependency-versions: highest
-            coverage: xdebug
+        php-version: ${{ fromJSON(needs.php-matrix.outputs.versions) }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+      - run: composer install
+      - run: composer test
+```
+</details>
+
+<details>
+  <summary>Run tests on the highest supported PHP version only.</summary>
+
+```yaml
+name: Test
+
+on:
+  push:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: typisttech/php-matrix-action@v2
+        id: php-matrix
 
       - uses: shivammathur/setup-php@v2
         with:
-          php-version: ${{ matrix.php }}
-          coverage: ${{ matrix.coverage }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          php-version: ${{ steps.php-matrix.outputs.highest }}
 
+      - run: composer install
+      - run: composer test
+```
+</details>
+
+<details>
+  <summary>Run `$ composer audit` against all supported PHP versions.</summary>
+
+```yaml
+name: Composer Audit
+
+on:
+  push:
+
+jobs:
+  php-matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      versions: ${{ steps.php-matrix.outputs.versions }}
+      highest: ${{ steps.php-matrix.outputs.highest }}
+      lowest: ${{ steps.php-matrix.outputs.lowest }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          sparse-checkout: composer.json
+          sparse-checkout-cone-mode: false
+
+      - uses: typisttech/php-matrix-action@v2
+        id: php-matrix
+
+  composer-audit:
+    needs: php-matrix
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php-version: ${{ fromJSON(needs.php-matrix.outputs.versions) }}
+        dependency-versions: [highest]
+        include:
+          - php-version: ${{ needs.php-matrix.outputs.lowest }}
+            dependency-versions: lowest
+          - php-version: ${{ needs.php-matrix.outputs.highest }}
+            dependency-versions: locked
+    env:
+      COMPOSER_NO_AUDIT: 1
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          sparse-checkout: |
+            composer.json
+            composer.lock
+          sparse-checkout-cone-mode: false
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          coverage: none
       - uses: ramsey/composer-install@v3
         with:
           dependency-versions: ${{ matrix.dependency-versions }}
 
-      - run: composer test:with-coverage
-        if: ${{ matrix.coverage == 'xdebug' }}
-
-      - run: composer test:without-coverage
-        if: ${{ matrix.coverage != 'xdebug' }}
+      - run: composer audit
 ```
-
 </details>
 
 ## Credits
