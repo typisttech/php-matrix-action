@@ -116,10 +116,6 @@ runs:
         php-matrix composer --mode="${INPUT_MODE}" --source="${INPUT_SOURCE}" "${INPUT_COMPOSER_JSON}" > matrix 2>&1
         retVal=$?
 
-        echo "::group::===> Matrix Output"
-        cat matrix
-        echo "::endgroup::"
-
         if [ $retVal -ne 0 ]; then
             echo "::error::Unable to generate matrix"
             exit 1
@@ -155,4 +151,9 @@ runs:
         echo "If you find this tool useful, I can build you more dev tools like this."
         echo "Let's talk if you are hiring PHP / Ruby / Go developers."
         echo -e "\033[32;m✓\033[0m \033[34;mTang Rufus\033[0m https://typist.tech/contact"
+
+        echo ""
+        echo "::group::==> Matrix Output"
+        cat matrix
+        echo "::endgroup::"
       shell: bash
