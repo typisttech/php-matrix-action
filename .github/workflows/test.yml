@@ -68,7 +68,7 @@ jobs:
             case: complex
             verify-attestation: true
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           path: local-action
 
@@ -100,7 +100,7 @@ jobs:
   outputs:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           path: local-action
 
@@ -147,7 +147,7 @@ jobs:
           - missing-php
           - missing-require
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           path: local-action
 
@@ -177,7 +177,7 @@ jobs:
           - php.net
           - offline
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           path: local-action
 
