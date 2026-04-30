@@ -55,7 +55,7 @@ runs:
       shell: bash
       working-directory: ${{ github.action_path }}
       env:
-        PATTERN: php-matrix_linux_arm64.tar.gz
+        PATTERN: php-matrix_Linux_arm64.tar.gz
         TAG: ${{ inputs.version }}
         GH_TOKEN: ${{ inputs.github-token }}
 
@@ -65,7 +65,7 @@ runs:
       shell: bash
       working-directory: ${{ github.action_path }}
       env:
-        PATTERN: php-matrix_linux_amd64.tar.gz
+        PATTERN: php-matrix_Linux_amd64.tar.gz
         TAG: ${{ inputs.version }}
         GH_TOKEN: ${{ github.token }}
 
@@ -75,7 +75,7 @@ runs:
       shell: bash
       working-directory: ${{ github.action_path }}
       env:
-        PATTERN: php-matrix_darwin_arm64.tar.gz
+        PATTERN: php-matrix_Darwin_arm64.tar.gz
         TAG: ${{ inputs.version }}
         GH_TOKEN: ${{ inputs.github-token }}
 
@@ -85,7 +85,7 @@ runs:
       shell: bash
       working-directory: ${{ github.action_path }}
       env:
-        PATTERN: php-matrix_darwin_amd64.tar.gz
+        PATTERN: php-matrix_Darwin_amd64.tar.gz
         TAG: ${{ inputs.version }}
         GH_TOKEN: ${{ inputs.github-token }}
 
