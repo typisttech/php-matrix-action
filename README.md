@@ -38,13 +38,13 @@
 See [action.yml](action.yml) and the underlying script [`typisttech/php-matrix`](https://github.com/typisttech/php-matrix/#options).
 
 ```yaml
-  - uses: typisttech/php-matrix-action@v2
+  - uses: typisttech/php-matrix-action@ee26ae37ffb37246b9a3912b71d95b661ad341b8 # v2.0.8
     with:
       # Path to composer.json
       #
       # Default: composer.json
       composer-json: some/path/to/composer.json
-      
+
       # Version format.
       #
       # Available modes:
@@ -68,9 +68,9 @@ See [action.yml](action.yml) and the underlying script [`typisttech/php-matrix`]
       source: offline
 
       # PHP Matrix version.
-      # 
+      #
       # The version of [php-matrix] to use. Leave blank for latest. For example: v1.0.2
-      # 
+      #
       # [php-matrix]: https://github.com/typisttech/php-matrix
       #
       # Default: ''
@@ -124,12 +124,13 @@ jobs:
     outputs:
       versions: ${{ steps.php-matrix.outputs.versions }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           sparse-checkout: composer.json
           sparse-checkout-cone-mode: false
+          persist-credentials: false
 
-      - uses: typisttech/php-matrix-action@v2
+      - uses: typisttech/php-matrix-action@ee26ae37ffb37246b9a3912b71d95b661ad341b8 # v2.0.8
         id: php-matrix
 
   test:
@@ -139,8 +140,10 @@ jobs:
       matrix:
         php-version: ${{ fromJSON(needs.php-matrix.outputs.versions) }}
     steps:
-      - uses: actions/checkout@v5
-      - uses: shivammathur/setup-php@v2
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+      - uses: shivammathur/setup-php@accd6127cb78bee3e8082180cb391013d204ef9f # master
         with:
           php-version: ${{ matrix.php-version }}
       - run: composer install
@@ -161,12 +164,13 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
-
-      - uses: typisttech/php-matrix-action@v2
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+      - uses: typisttech/php-matrix-action@ee26ae37ffb37246b9a3912b71d95b661ad341b8 # v2.0.8
         id: php-matrix
 
-      - uses: shivammathur/setup-php@v2
+      - uses: shivammathur/setup-php@accd6127cb78bee3e8082180cb391013d204ef9f # master
         with:
           php-version: ${{ steps.php-matrix.outputs.highest }}
 
@@ -192,12 +196,13 @@ jobs:
       highest: ${{ steps.php-matrix.outputs.highest }}
       lowest: ${{ steps.php-matrix.outputs.lowest }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           sparse-checkout: composer.json
           sparse-checkout-cone-mode: false
+          persist-credentials: false
 
-      - uses: typisttech/php-matrix-action@v2
+      - uses: typisttech/php-matrix-action@ee26ae37ffb37246b9a3912b71d95b661ad341b8 # v2.0.8
         id: php-matrix
 
   composer-audit:
@@ -215,18 +220,19 @@ jobs:
     env:
       COMPOSER_NO_AUDIT: 1
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           sparse-checkout: |
             composer.json
             composer.lock
           sparse-checkout-cone-mode: false
+          persist-credentials: false
 
-      - uses: shivammathur/setup-php@v2
+      - uses: shivammathur/setup-php@accd6127cb78bee3e8082180cb391013d204ef9f # master
         with:
           php-version: ${{ matrix.php-version }}
           coverage: none
-      - uses: ramsey/composer-install@v3
+      - uses: ramsey/composer-install@65e4f84970763564f46a70b8a54b90d033b3bdda # 4.0.0
         with:
           dependency-versions: ${{ matrix.dependency-versions }}
 
