@@ -40,7 +40,7 @@ jobs:
           - caret-7-3
           - exactly-7-3-5
           - complex
-        verify-attestation: 
+        verify-attestation:
           - false
         include:
           - runs-on: ubuntu-24.04-arm
@@ -68,14 +68,19 @@ jobs:
             case: complex
             verify-attestation: true
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
+          persist-credentials: false
           path: local-action
 
       - name: Create fake composer.json
         run: |
-          mkdir -p $(dirname ${{ matrix.composer-json }})
-          cp local-action/testdata/${{ matrix.case }}.composer.json ${{ matrix.composer-json }}
+          DIR=$(dirname "$COMPOSER_JSON")
+          mkdir -p "${DIR}"
+          cp "local-action/testdata/${CASE}.composer.json" "${COMPOSER_JSON}"
+        env:
+          COMPOSER_JSON: ${{ matrix.composer-json }}
+          CASE: ${{ matrix.case }}
 
       - uses: ./local-action
         id: subject
@@ -100,8 +105,9 @@ jobs:
   outputs:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
+          persist-credentials: false
           path: local-action
 
       - uses: ./local-action
@@ -147,8 +153,9 @@ jobs:
           - missing-php
           - missing-require
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
+          persist-credentials: false
           path: local-action
 
       - name: Create fake composer.json
@@ -169,7 +176,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        mode: 
+        mode:
           - minor-only
           - full
         source:
@@ -177,8 +184,9 @@ jobs:
           - php.net
           - offline
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
+          persist-credentials: false
           path: local-action
 
       - name: Ensure no composer.json
