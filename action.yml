@@ -49,50 +49,43 @@ outputs:
 runs:
   using: "composite"
   steps:
-    - name: Setup Environment
+    - name: Prepare Environment
       run: |
         mkdir -p "${RUNNER_TEMP}/php-matrix"
         echo PHP_MATRIX_DIR="${RUNNER_TEMP}/php-matrix" >> "$GITHUB_ENV"
         echo PHP_MATRIX="${RUNNER_TEMP}/php-matrix/bin/php-matrix" >> "$GITHUB_ENV"
       shell: bash
 
-    - name: Download PHP Matrix (Linux arm64)
-      if: ${{ runner.os == 'Linux' && runner.arch == 'ARM64' }}
-      run: gh release download --repo typisttech/php-matrix --output php-matrix.tar.gz --pattern "${PATTERN}" "${TAG}"
+    - name: Determine Download Pattern (Linux arm64)
+      if: runner.os == 'Linux' && runner.arch == 'ARM64'
+      run: echo "PATTERN=php-matrix_Linux_arm64.tar.gz" >> "$GITHUB_ENV"
       shell: bash
-      working-directory: ${{ env.PHP_MATRIX_DIR }}
-      env:
-        PATTERN: php-matrix_Linux_arm64.tar.gz
-        TAG: ${{ inputs.version }}
-        GH_TOKEN: ${{ inputs.github-token }}
 
-    - name: Download PHP Matrix (Linux amd64)
-      if: ${{ runner.os == 'Linux' && runner.arch == 'x64' }}
-      run: gh release download --repo typisttech/php-matrix --output php-matrix.tar.gz --pattern "${PATTERN}" "${TAG}"
+    - name: Determine Download Pattern (Linux amd64)
+      if: runner.os == 'Linux' && runner.arch == 'x64'
+      run: echo "PATTERN=php-matrix_Linux_x86_64.tar.gz" >> "$GITHUB_ENV"
       shell: bash
-      working-directory: ${{ env.PHP_MATRIX_DIR }}
-      env:
-        PATTERN: php-matrix_Linux_x86_64.tar.gz
-        TAG: ${{ inputs.version }}
-        GH_TOKEN: ${{ github.token }}
 
-    - name: Download PHP Matrix (Darwin arm64)
-      if: ${{ runner.os == 'macOS' && runner.arch == 'ARM64' }}
-      run: gh release download --repo typisttech/php-matrix --output php-matrix.tar.gz --pattern "${PATTERN}" "${TAG}"
+    - name: Determine Download Pattern (Darwin arm64)
+      if: runner.os == 'macOS' && runner.arch == 'ARM64'
+      run: echo "PATTERN=php-matrix_Darwin_arm64.tar.gz" >> "$GITHUB_ENV"
       shell: bash
-      working-directory: ${{ env.PHP_MATRIX_DIR }}
-      env:
-        PATTERN: php-matrix_Darwin_arm64.tar.gz
-        TAG: ${{ inputs.version }}
-        GH_TOKEN: ${{ inputs.github-token }}
 
-    - name: Download PHP Matrix (Darwin amd64)
-      if: ${{ runner.os == 'macOS' && runner.arch == 'x64' }}
+    - name: Determine Download Pattern (Darwin amd64)
+      if: runner.os == 'macOS' && runner.arch == 'x64'
+      run: echo "PATTERN=php-matrix_Darwin_x86_64.tar.gz" >> "$GITHUB_ENV"
+      shell: bash
+
+    - name: Assert Download Pattern Determined
+      if: env.PATTERN == ''
+      run: exit 1
+      shell: bash
+
+    - name: Download PHP Matrix
       run: gh release download --repo typisttech/php-matrix --output php-matrix.tar.gz --pattern "${PATTERN}" "${TAG}"
       shell: bash
       working-directory: ${{ env.PHP_MATRIX_DIR }}
       env:
-        PATTERN: php-matrix_Darwin_x86_64.tar.gz
         TAG: ${{ inputs.version }}
         GH_TOKEN: ${{ inputs.github-token }}
 
