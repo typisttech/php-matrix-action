@@ -204,6 +204,7 @@ jobs:
         run: exit 1
 
   wait-for-all-tests:
+    if: cancelled() || contains(needs.*.result, 'cancelled') || contains(needs.*.result, 'failure')
     needs:
       - positive
       - outputs
@@ -211,4 +212,5 @@ jobs:
       - missing
     runs-on: ubuntu-latest
     steps:
-      - run: echo "All tests passed!"
+      - name: Assert no required jobs were cancelled or failed
+        run: exit 1
