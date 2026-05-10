@@ -49,11 +49,18 @@ outputs:
 runs:
   using: "composite"
   steps:
+    - name: Setup Environment
+      run: |
+        mkdir -p "${RUNNER_TEMP}/php-matrix"
+        echo PHP_MATRIX_DIR="${RUNNER_TEMP}/php-matrix" >> "$GITHUB_ENV"
+        echo PHP_MATRIX="${RUNNER_TEMP}/php-matrix/bin/php-matrix" >> "$GITHUB_ENV"
+      shell: bash
+
     - name: Download PHP Matrix (Linux arm64)
       if: ${{ runner.os == 'Linux' && runner.arch == 'ARM64' }}
       run: gh release download --repo typisttech/php-matrix --output php-matrix.tar.gz --pattern "${PATTERN}" "${TAG}"
       shell: bash
-      working-directory: ${{ github.action_path }}
+      working-directory: ${{ env.PHP_MATRIX_DIR }}
       env:
         PATTERN: php-matrix_Linux_arm64.tar.gz
         TAG: ${{ inputs.version }}
@@ -63,7 +70,7 @@ runs:
       if: ${{ runner.os == 'Linux' && runner.arch == 'x64' }}
       run: gh release download --repo typisttech/php-matrix --output php-matrix.tar.gz --pattern "${PATTERN}" "${TAG}"
       shell: bash
-      working-directory: ${{ github.action_path }}
+      working-directory: ${{ env.PHP_MATRIX_DIR }}
       env:
         PATTERN: php-matrix_Linux_x86_64.tar.gz
         TAG: ${{ inputs.version }}
@@ -73,7 +80,7 @@ runs:
       if: ${{ runner.os == 'macOS' && runner.arch == 'ARM64' }}
       run: gh release download --repo typisttech/php-matrix --output php-matrix.tar.gz --pattern "${PATTERN}" "${TAG}"
       shell: bash
-      working-directory: ${{ github.action_path }}
+      working-directory: ${{ env.PHP_MATRIX_DIR }}
       env:
         PATTERN: php-matrix_Darwin_arm64.tar.gz
         TAG: ${{ inputs.version }}
@@ -83,7 +90,7 @@ runs:
       if: ${{ runner.os == 'macOS' && runner.arch == 'x64' }}
       run: gh release download --repo typisttech/php-matrix --output php-matrix.tar.gz --pattern "${PATTERN}" "${TAG}"
       shell: bash
-      working-directory: ${{ github.action_path }}
+      working-directory: ${{ env.PHP_MATRIX_DIR }}
       env:
         PATTERN: php-matrix_Darwin_x86_64.tar.gz
         TAG: ${{ inputs.version }}
@@ -93,7 +100,7 @@ runs:
       if: ${{ inputs.verify-attestation == 'true' }}
       run: gh attestation verify --repo typisttech/php-matrix php-matrix.tar.gz
       shell: bash
-      working-directory: ${{ github.action_path }}
+      working-directory: ${{ env.PHP_MATRIX_DIR }}
       env:
         GH_TOKEN: ${{ inputs.github-token }}
 
@@ -102,18 +109,12 @@ runs:
         mkdir bin
         tar -xvf php-matrix.tar.gz -C ./bin php-matrix
       shell: bash
-      working-directory: ${{ github.action_path }}
-
-    - name: Add the binary into PATH
-      run: echo "${ACTION_PATH}/bin" >> "$GITHUB_PATH"
-      shell: bash
-      env:
-        ACTION_PATH: ${{ github.action_path }}
+      working-directory: ${{ env.PHP_MATRIX_DIR }}
 
     - name: Generate Matrix
       id: generate-matrix
       run: |
-        php-matrix composer --mode="${INPUT_MODE}" --source="${INPUT_SOURCE}" "${INPUT_COMPOSER_JSON}" > matrix 2>&1
+        "${PHP_MATRIX}" composer --mode="${INPUT_MODE}" --source="${INPUT_SOURCE}" "${INPUT_COMPOSER_JSON}" > matrix 2>&1
         retVal=$?
 
         if [ $retVal -ne 0 ]; then
@@ -138,7 +139,7 @@ runs:
         echo "==> Setup PHP Matrix"
         echo -e "\033[32;m✓\033[0m \033[34;mphp-matrix\033[0m https://github.com/typisttech/php-matrix"
         echo "::group::$ php-matrix --version"
-        php-matrix --version
+        "${PHP_MATRIX}" --version
         echo "::endgroup::"
 
         echo ""
