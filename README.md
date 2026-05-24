@@ -45,7 +45,7 @@ See [action.yml](action.yml) and the underlying script [`typisttech/php-matrix`]
       # Default: composer.json
       composer-json: some/path/to/composer.json
 
-      # Version format.
+      # Version format
       #
       # Available modes:
       #   - `minor-only`: Report `MAJOR.MINOR` versions only
@@ -54,7 +54,7 @@ See [action.yml](action.yml) and the underlying script [`typisttech/php-matrix`]
       # Default: minor-only
       mode: full
 
-      # Source of releases information.
+      # Source of releases information
       #
       # Available sources:
       #   - `auto`: Use `offline` in `minor-only` mode. Otherwise, fetch from [php.net]
@@ -67,7 +67,7 @@ See [action.yml](action.yml) and the underlying script [`typisttech/php-matrix`]
       # Default: auto
       source: offline
 
-      # PHP Matrix version.
+      # PHP Matrix version
       #
       # The version of [php-matrix] to use. Leave blank for latest. For example: v1.0.2
       #
@@ -78,7 +78,7 @@ See [action.yml](action.yml) and the underlying script [`typisttech/php-matrix`]
 
       # Verify Attestation
       #
-      # Whether to verify PHP matrix tarball attestation.
+      # Whether to verify PHP matrix tarball attestation
 
       # Github Token
       #
