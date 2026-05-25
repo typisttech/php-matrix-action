@@ -79,6 +79,9 @@ See [action.yml](action.yml) and the underlying script [`typisttech/php-matrix`]
       # Verify Attestation
       #
       # Whether to verify PHP matrix tarball attestation
+      #
+      # Default: true
+      verify-attestation: false
 
       # Github Token
       #
