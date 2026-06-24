@@ -182,67 +182,6 @@ jobs:
 ```
 </details>
 
-<details>
-  <summary>Run `$ composer audit` against all supported PHP versions.</summary>
-
-```yaml
-name: Composer Audit
-
-on:
-  push:
-
-jobs:
-  php-matrix:
-    runs-on: ubuntu-latest
-    outputs:
-      versions: ${{ steps.php-matrix.outputs.versions }}
-      highest: ${{ steps.php-matrix.outputs.highest }}
-      lowest: ${{ steps.php-matrix.outputs.lowest }}
-    steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-        with:
-          sparse-checkout: composer.json
-          sparse-checkout-cone-mode: false
-          persist-credentials: false
-
-      - uses: typisttech/php-matrix-action@ee26ae37ffb37246b9a3912b71d95b661ad341b8 # v2.0.8
-        id: php-matrix
-
-  composer-audit:
-    needs: php-matrix
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        php-version: ${{ fromJSON(needs.php-matrix.outputs.versions) }}
-        dependency-versions: [highest]
-        include:
-          - php-version: ${{ needs.php-matrix.outputs.lowest }}
-            dependency-versions: lowest
-          - php-version: ${{ needs.php-matrix.outputs.highest }}
-            dependency-versions: locked
-    env:
-      COMPOSER_NO_AUDIT: 1
-    steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-        with:
-          sparse-checkout: |
-            composer.json
-            composer.lock
-          sparse-checkout-cone-mode: false
-          persist-credentials: false
-
-      - uses: shivammathur/setup-php@accd6127cb78bee3e8082180cb391013d204ef9f # master
-        with:
-          php-version: ${{ matrix.php-version }}
-          coverage: none
-      - uses: ramsey/composer-install@65e4f84970763564f46a70b8a54b90d033b3bdda # 4.0.0
-        with:
-          dependency-versions: ${{ matrix.dependency-versions }}
-
-      - run: composer audit
-```
-</details>
-
 ## Credits
 
 [`PHP Matrix Action`](https://github.com/typisttech/php-matrix-action) is a [Typist Tech](https://typist.tech) project and
