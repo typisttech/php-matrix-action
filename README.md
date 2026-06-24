@@ -243,6 +243,21 @@ jobs:
 ```
 </details>
 
+## People Also Use
+
+- [PHP Matrix](https://github.com/typisttech/php-matrix)
+  CLI to generate PHP version matrix according to `composer.json`
+- [Composer Audit to SARIF Action](https://github.com/typisttech/composer-audit-to-sarif-action)
+  Convert Composer audit reports to SARIF files in GitHub Actions
+- [WP Sec Adv](https://github.com/typisttech/wpsecadv)
+  Composer repository for WordPress security advisories
+- [WP Org Closed Plugin](https://github.com/typisttech/wp-org-closed-plugin)
+  Composer plugin to mark packages as abandoned if closed on WordPress.org
+- [comver](https://github.com/typisttech/comver)
+  Work with composer supported versions in Go
+- [WPry](https://github.com/typisttech/wpry)
+  Parse WordPress plugin and theme headers
+
 ## Credits
 
 [`PHP Matrix Action`](https://github.com/typisttech/php-matrix-action) is a [Typist Tech](https://typist.tech) project and
