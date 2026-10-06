@@ -238,8 +238,8 @@ jobs:
   wait-for-all-tests:
     if: cancelled() || contains(needs.*.result, 'cancelled') || contains(needs.*.result, 'failure')
     needs:
-      - outputs
       - positive
+      - outputs
       - negative
       - missing
     runs-on: ubuntu-slim
