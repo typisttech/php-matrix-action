@@ -18,48 +18,6 @@ concurrency:
 permissions: {}
 
 jobs:
-  outputs:
-    runs-on: ${{ matrix.runs-on }}
-    strategy:
-      matrix:
-        runs-on:
-          - ubuntu-slim
-          - ubuntu-26.04
-          - ubuntu-26.04-arm
-          - ubuntu-24.04
-          - ubuntu-24.04-arm
-          - macos-26
-          - macos-26-intel
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          persist-credentials: false
-          path: local-action
-
-      - uses: ./local-action
-        id: subject
-        with:
-          composer-json: local-action/testdata/complex.composer.json
-          mode: minor-only
-          source: offline
-          verify-attestation: false
-
-      - name: Assert constraint output
-        run: exit 1
-        if: steps.subject.outputs.constraint != '^7.3.32 || ^8.1 <=8.1.9'
-
-      - name: Assert versions output
-        run: exit 1
-        if: steps.subject.outputs.versions != toJSON(fromJSON('["7.3","7.4","8.1"]'))
-
-      - name: Assert lowest output
-        run: exit 1
-        if: steps.subject.outputs.lowest != '7.3'
-
-      - name: Assert highest output
-        run: exit 1
-        if: steps.subject.outputs.highest != '8.1'
-
   positive:
     runs-on: ${{ matrix.runs-on }}
     strategy:
@@ -149,6 +107,48 @@ jobs:
           } >> actual.json
 
       - run: diff <(jq --sort-keys . actual.json) <(jq --sort-keys . local-action/testdata/${{ matrix.case }}.${{ matrix.mode }}.golden.json)
+
+  outputs:
+    runs-on: ${{ matrix.runs-on }}
+    strategy:
+      matrix:
+        runs-on:
+          - ubuntu-slim
+          - ubuntu-26.04
+          - ubuntu-26.04-arm
+          - ubuntu-24.04
+          - ubuntu-24.04-arm
+          - macos-26
+          - macos-26-intel
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          path: local-action
+
+      - uses: ./local-action
+        id: subject
+        with:
+          composer-json: local-action/testdata/complex.composer.json
+          mode: minor-only
+          source: offline
+          verify-attestation: false
+
+      - name: Assert constraint output
+        run: exit 1
+        if: steps.subject.outputs.constraint != '^7.3.32 || ^8.1 <=8.1.9'
+
+      - name: Assert versions output
+        run: exit 1
+        if: steps.subject.outputs.versions != toJSON(fromJSON('["7.3","7.4","8.1"]'))
+
+      - name: Assert lowest output
+        run: exit 1
+        if: steps.subject.outputs.lowest != '7.3'
+
+      - name: Assert highest output
+        run: exit 1
+        if: steps.subject.outputs.highest != '8.1'
 
   negative:
     runs-on: ${{ matrix.runs-on }}
