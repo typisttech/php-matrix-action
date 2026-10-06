@@ -24,12 +24,6 @@ jobs:
       matrix:
         runs-on:
           - ubuntu-slim
-          - ubuntu-26.04
-          - ubuntu-26.04-arm
-          - ubuntu-24.04
-          - ubuntu-24.04-arm
-          - macos-26
-          - macos-26-intel
         composer-json:
           - composer.json
           - not-named-composer.json
@@ -49,30 +43,55 @@ jobs:
         verify-attestation:
           - false
         include:
+          - runs-on: ubuntu-slim
+            composer-json: sub/dir/composer.json
+            mode: full
+            source: offline
+            case: complex
+            verify-attestation: true
+
+          - runs-on: ubuntu-26.04
+            composer-json: sub/dir/composer.json
+            mode: full
+            source: offline
+            case: complex
+            verify-attestation: true
+
+          - runs-on: ubuntu-26.04-arm
+            composer-json: sub/dir/composer.json
+            mode: full
+            source: offline
+            case: complex
+            verify-attestation: true
+
+          - runs-on: ubuntu-24.04
+            composer-json: sub/dir/composer.json
+            mode: full
+            source: offline
+            case: complex
+            verify-attestation: true
+
           - runs-on: ubuntu-24.04-arm
             composer-json: sub/dir/composer.json
             mode: full
             source: offline
             case: complex
             verify-attestation: true
-          - runs-on: ubuntu-latest
+
+          - runs-on: macos-26
             composer-json: sub/dir/composer.json
             mode: full
             source: offline
             case: complex
             verify-attestation: true
-          - runs-on: macos-latest
+
+          - runs-on: macos-26-intel
             composer-json: sub/dir/composer.json
             mode: full
             source: offline
             case: complex
             verify-attestation: true
-          - runs-on: macos-15-intel
-            composer-json: sub/dir/composer.json
-            mode: full
-            source: offline
-            case: complex
-            verify-attestation: true
+
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -151,9 +170,11 @@ jobs:
         if: steps.subject.outputs.highest != '8.1'
 
   negative:
-    runs-on: ubuntu-slim
+    runs-on: ${{ matrix.runs-on }}
     strategy:
       matrix:
+        runs-on:
+          - ubuntu-slim
         mode:
           - minor-only
           - full
@@ -168,6 +189,37 @@ jobs:
           - match-none
           - missing-php
           - missing-require
+        include:
+          - runs-on: ubuntu-26.04
+            mode: full
+            source: offline
+            case: missing-require
+
+          - runs-on: ubuntu-26.04-arm
+            mode: full
+            source: offline
+            case: missing-require
+
+          - runs-on: ubuntu-24.04
+            mode: full
+            source: offline
+            case: missing-require
+
+          - runs-on: ubuntu-24.04-arm
+            mode: full
+            source: offline
+            case: missing-require
+
+          - runs-on: macos-26
+            mode: full
+            source: offline
+            case: missing-require
+
+          - runs-on: macos-26-intel
+            mode: full
+            source: offline
+            case: missing-require
+
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -193,13 +245,7 @@ jobs:
     strategy:
       matrix:
         runs-on:
-          - 
-          - ubuntu-26.04
-          - ubuntu-26.04-arm
-          - ubuntu-24.04
-          - ubuntu-24.04-arm
-          - macos-26
-          - macos-26-intel
+          - ubuntu-slim
         mode:
           - minor-only
           - full
@@ -207,6 +253,31 @@ jobs:
           - auto
           - php.net
           - offline
+        include:
+          - runs-on: ubuntu-26.04
+            mode: full
+            source: offline
+
+          - runs-on: ubuntu-26.04-arm
+            mode: full
+            source: offline
+
+          - runs-on: ubuntu-24.04
+            mode: full
+            source: offline
+
+          - runs-on: ubuntu-24.04-arm
+            mode: full
+            source: offline
+
+          - runs-on: macos-26
+            mode: full
+            source: offline
+
+          - runs-on: macos-26-intel
+            mode: full
+            source: offline
+
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
