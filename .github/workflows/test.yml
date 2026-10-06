@@ -21,7 +21,7 @@ jobs:
   outputs:
     runs-on: ${{ matrix.runs-on }}
     strategy:
-      matrix: &matrix
+      matrix:
         runs-on:
           - ubuntu-slim
           - ubuntu-26.04
@@ -64,7 +64,14 @@ jobs:
     runs-on: ${{ matrix.runs-on }}
     strategy:
       matrix:
-        <<: *matrix
+        runs-on:
+          - ubuntu-slim
+          - ubuntu-26.04
+          - ubuntu-26.04-arm
+          - ubuntu-24.04
+          - ubuntu-24.04-arm
+          - macos-26
+          - macos-26-intel
         composer-json:
           - composer.json
           - not-named-composer.json
@@ -147,7 +154,14 @@ jobs:
     runs-on: ${{ matrix.runs-on }}
     strategy:
       matrix:
-        <<: *matrix
+        runs-on:
+          - ubuntu-slim
+          - ubuntu-26.04
+          - ubuntu-26.04-arm
+          - ubuntu-24.04
+          - ubuntu-24.04-arm
+          - macos-26
+          - macos-26-intel
         mode:
           - minor-only
           - full
@@ -186,7 +200,14 @@ jobs:
     runs-on: ${{ matrix.runs-on }}
     strategy:
       matrix:
-        <<: *matrix
+        runs-on:
+          - ubuntu-slim
+          - ubuntu-26.04
+          - ubuntu-26.04-arm
+          - ubuntu-24.04
+          - ubuntu-24.04-arm
+          - macos-26
+          - macos-26-intel
         mode:
           - minor-only
           - full
