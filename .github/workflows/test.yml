@@ -107,7 +107,7 @@ jobs:
           COMPOSER_JSON: ${{ matrix.composer-json }}
           CASE: ${{ matrix.case }}
 
-      - uses: ./local-action
+      - uses: $/
         id: subject
         with:
           composer-json: ${{ matrix.composer-json }}
@@ -117,15 +117,30 @@ jobs:
 
       - run: |
           {
-            echo "{"
-            echo '"constraint": "${{ steps.subject.outputs.constraint }}",'
-            echo '"highest": "${{ steps.subject.outputs.highest }}",'
-            echo '"lowest": "${{ steps.subject.outputs.lowest }}",'
-            echo '"versions": ${{ steps.subject.outputs.versions }}'
-            echo "}"
-          } >> actual.json
+              echo 'expected<<EOF'
+              cat "local-action/testdata/${CASE}.${MODE}.golden.json"
+              echo EOF
+          } >> "$GITHUB_OUTPUT"
+        env:
+          CASE: ${{ matrix.case }}
+          MODE: ${{ matrix.mode }}
+        id: golden
 
-      - run: diff <(jq --sort-keys . actual.json) <(jq --sort-keys . local-action/testdata/${{ matrix.case }}.${{ matrix.mode }}.golden.json)
+      - name: Assert constraint output
+        run: exit 1
+        if: steps.subject.outputs.constraint != fromJSON(steps.golden.outputs.expected).constraint
+
+      - name: Assert versions output
+        run: exit 1
+        if: steps.subject.outputs.versions != toJSON(fromJSON(steps.golden.outputs.expected).versions)
+
+      - name: Assert lowest output
+        run: exit 1
+        if: steps.subject.outputs.lowest != fromJSON(steps.golden.outputs.expected).lowest
+
+      - name: Assert highest output
+        run: exit 1
+        if: steps.subject.outputs.highest != fromJSON(steps.golden.outputs.expected).highest
 
   outputs:
     runs-on: ${{ matrix.runs-on }}
@@ -145,7 +160,7 @@ jobs:
           persist-credentials: false
           path: local-action
 
-      - uses: ./local-action
+      - uses: $/
         id: subject
         with:
           composer-json: local-action/testdata/complex.composer.json
@@ -227,13 +242,16 @@ jobs:
           path: local-action
 
       - name: Create fake composer.json
-        run: cp local-action/testdata/${{ matrix.case }}.composer.json composer.json
+        run: cp "local-action/testdata/${CASE}.composer.json" composer.json
+        env:
+          CASE: ${{ matrix.case }}
 
-      - uses: ./local-action
+      - uses: $/
         id: subject
         with:
           mode: ${{ matrix.mode }}
           source: ${{ matrix.source }}
+          verify-attestation: false
         continue-on-error: true
 
       - name: Assert action failed
@@ -279,19 +297,15 @@ jobs:
             source: offline
 
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          persist-credentials: false
-          path: local-action
-
       - name: Ensure no composer.json
         run: rm -f composer.json
 
-      - uses: ./local-action
+      - uses: $/
         id: subject
         with:
           mode: ${{ matrix.mode }}
           source: ${{ matrix.source }}
+          verify-attestation: false
         continue-on-error: true
 
       - name: Assert action failed
