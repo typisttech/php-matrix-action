@@ -123,7 +123,7 @@ on:
 
 jobs:
   php-matrix:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     outputs:
       versions: ${{ steps.php-matrix.outputs.versions }}
     steps:

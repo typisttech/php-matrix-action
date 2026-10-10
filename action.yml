@@ -26,7 +26,7 @@ inputs:
 
   verify-attestation:
     description: Whether to verify PHP matrix tarball attestation
-    default: true
+    default: 'true'
 
   github-token:
     description: GitHub token to use for authentication
@@ -50,7 +50,7 @@ runs:
   using: "composite"
   steps:
     - name: Prepare Environment
-      run: |
+      run: | # zizmor: ignore[github-env]
         mkdir -p "${RUNNER_TEMP}/php-matrix"
         echo PHP_MATRIX_DIR="${RUNNER_TEMP}/php-matrix" >> "$GITHUB_ENV"
         echo PHP_MATRIX="${RUNNER_TEMP}/php-matrix/bin/php-matrix" >> "$GITHUB_ENV"
