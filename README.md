@@ -38,7 +38,7 @@
 See [action.yml](action.yml) and the underlying script [`typisttech/php-matrix`](https://github.com/typisttech/php-matrix/#options).
 
 ```yaml
-  - uses: typisttech/php-matrix-action@ee26ae37ffb37246b9a3912b71d95b661ad341b8 # v2.0.8
+  - uses: typisttech/php-matrix-action@25c8c21956f124da41a6cdfdcaf514921724a8dc # v3.1.0
     with:
       # Path to composer.json
       #
@@ -127,13 +127,13 @@ jobs:
     outputs:
       versions: ${{ steps.php-matrix.outputs.versions }}
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           sparse-checkout: composer.json
           sparse-checkout-cone-mode: false
           persist-credentials: false
 
-      - uses: typisttech/php-matrix-action@ee26ae37ffb37246b9a3912b71d95b661ad341b8 # v2.0.8
+      - uses: typisttech/php-matrix-action@25c8c21956f124da41a6cdfdcaf514921724a8dc # v3.1.0
         id: php-matrix
 
   test:
@@ -143,10 +143,10 @@ jobs:
       matrix:
         php-version: ${{ fromJSON(needs.php-matrix.outputs.versions) }}
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - uses: shivammathur/setup-php@accd6127cb78bee3e8082180cb391013d204ef9f # master
+      - uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # 2.40.0
         with:
           php-version: ${{ matrix.php-version }}
       - run: composer install
@@ -167,13 +167,13 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - uses: typisttech/php-matrix-action@ee26ae37ffb37246b9a3912b71d95b661ad341b8 # v2.0.8
+      - uses: typisttech/php-matrix-action@25c8c21956f124da41a6cdfdcaf514921724a8dc # v3.1.0
         id: php-matrix
 
-      - uses: shivammathur/setup-php@accd6127cb78bee3e8082180cb391013d204ef9f # master
+      - uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # 2.40.0
         with:
           php-version: ${{ steps.php-matrix.outputs.highest }}
 
