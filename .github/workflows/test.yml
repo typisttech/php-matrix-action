@@ -78,14 +78,7 @@ jobs:
             case: complex
             verify-attestation: true
 
-          - runs-on: macos-26
-            composer-json: sub/dir/composer.json
-            mode: full
-            source: offline
-            case: complex
-            verify-attestation: true
-
-          - runs-on: macos-26-intel
+          - runs-on: xcode-27
             composer-json: sub/dir/composer.json
             mode: full
             source: offline
@@ -152,8 +145,7 @@ jobs:
           - ubuntu-26.04-arm
           - ubuntu-24.04
           - ubuntu-24.04-arm
-          - macos-26
-          - macos-26-intel
+          - xcode-27
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -225,12 +217,7 @@ jobs:
             source: offline
             case: missing-require
 
-          - runs-on: macos-26
-            mode: full
-            source: offline
-            case: missing-require
-
-          - runs-on: macos-26-intel
+          - runs-on: xcode-27
             mode: full
             source: offline
             case: missing-require
@@ -288,11 +275,7 @@ jobs:
             mode: full
             source: offline
 
-          - runs-on: macos-26
-            mode: full
-            source: offline
-
-          - runs-on: macos-26-intel
+          - runs-on: xcode-27
             mode: full
             source: offline
 
