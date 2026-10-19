@@ -38,7 +38,7 @@
 See [action.yml](action.yml) and the underlying script [`typisttech/php-matrix`](https://github.com/typisttech/php-matrix/#options).
 
 ```yaml
-  - uses: typisttech/php-matrix-action@25c8c21956f124da41a6cdfdcaf514921724a8dc # v3.1.0
+  - uses: typisttech/php-matrix-action@73b41f402280305866c655b5a2485d5c9d7a36bc # v4.0.0
     with:
       # Path to composer.json
       #
@@ -133,7 +133,7 @@ jobs:
           sparse-checkout-cone-mode: false
           persist-credentials: false
 
-      - uses: typisttech/php-matrix-action@25c8c21956f124da41a6cdfdcaf514921724a8dc # v3.1.0
+      - uses: typisttech/php-matrix-action@73b41f402280305866c655b5a2485d5c9d7a36bc # v4.0.0
         id: php-matrix
 
   test:
@@ -170,7 +170,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - uses: typisttech/php-matrix-action@25c8c21956f124da41a6cdfdcaf514921724a8dc # v3.1.0
+      - uses: typisttech/php-matrix-action@73b41f402280305866c655b5a2485d5c9d7a36bc # v4.0.0
         id: php-matrix
 
       - uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # 2.40.0
