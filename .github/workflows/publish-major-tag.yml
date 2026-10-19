@@ -1,9 +1,6 @@
 name: Publish Major Tag
 
 on:
-  release:
-    types:
-      - published
   workflow_dispatch:
     inputs:
       tag_name:
@@ -11,6 +8,9 @@ on:
           Tag name that the major tag will point to. Examples: v1.2.3, 1.2.3
         required: true
         type: string
+  release:
+    types:
+      - published
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref_name }}-${{ inputs.tag_name }}
@@ -18,8 +18,11 @@ concurrency:
 
 permissions: {}
 
+cache-mode: none
+
 jobs:
   publish:
+    cache-mode: none
     runs-on: ubuntu-slim
     steps:
       - name: Create GitHub App Token
