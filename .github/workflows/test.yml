@@ -99,15 +99,16 @@ jobs:
           COMPOSER_JSON: ${{ matrix.composer-json }}
           CASE: ${{ matrix.case }}
 
-      - uses: $/
-        id: subject
+      - id: subject
+        uses: $/
         with:
           composer-json: ${{ matrix.composer-json }}
           mode: ${{ matrix.mode }}
           source: ${{ matrix.source }}
           verify-attestation: ${{ matrix.verify-attestation }}
 
-      - run: |
+      - id: golden
+        run: |
           {
               echo 'expected<<EOF'
               cat "local-action/testdata/${CASE}.${MODE}.golden.json"
@@ -116,7 +117,6 @@ jobs:
         env:
           CASE: ${{ matrix.case }}
           MODE: ${{ matrix.mode }}
-        id: golden
 
       - name: Assert constraint output
         if: steps.subject.outputs.constraint != fromJSON(steps.golden.outputs.expected).constraint
