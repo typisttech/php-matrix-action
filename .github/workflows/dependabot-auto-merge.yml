@@ -17,12 +17,12 @@ cache-mode: none
 
 jobs:
   auto-merge-pull-request:
+    if: github.event.pull_request.user.login == 'dependabot[bot]'
     permissions:
       contents: read
       pull-requests: read
     cache-mode: none
     runs-on: ubuntu-slim
-    if: github.event.pull_request.user.login == 'dependabot[bot]'
     steps:
       - name: Dependabot metadata
         id: dependabot-metadata
