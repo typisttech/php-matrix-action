@@ -133,15 +133,17 @@ jobs:
           sparse-checkout-cone-mode: false
           persist-credentials: false
 
-      - uses: typisttech/php-matrix-action@73b41f402280305866c655b5a2485d5c9d7a36bc # v4.0.0
-        id: php-matrix
+      - id: php-matrix
+        uses: typisttech/php-matrix-action@73b41f402280305866c655b5a2485d5c9d7a36bc # v4.0.0
+
 
   test:
-    runs-on: ubuntu-latest
-    needs: php-matrix
+    needs:
+      - php-matrix
     strategy:
       matrix:
         php-version: ${{ fromJSON(needs.php-matrix.outputs.versions) }}
+    runs-on: ubuntu-26.04
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -165,13 +167,15 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - uses: typisttech/php-matrix-action@73b41f402280305866c655b5a2485d5c9d7a36bc # v4.0.0
-        id: php-matrix
+
+      - id: php-matrix
+        uses: typisttech/php-matrix-action@73b41f402280305866c655b5a2485d5c9d7a36bc # v4.0.0
+
 
       - uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # 2.40.0
         with:
